@@ -1,3 +1,6 @@
 .ionide/*
 stationwalk.auth.exe
 vendor/*
+.vscode/*
+main.zip
+main

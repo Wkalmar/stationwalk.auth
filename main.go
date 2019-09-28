@@ -3,13 +3,11 @@ package main
 import (
 	"context"
 	"errors"
+	"os"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"golang.org/x/crypto/argon2"
 )
-
-const login = "su"
-const salt = "<your salt>"
 
 type Credentials struct {
 	Login    string `json:"login"`
@@ -29,6 +27,8 @@ func areSlicesEqual(a []byte, b []byte) bool {
 }
 
 func HandleRequest(ctx context.Context, credentials Credentials) (string, error) {
+	login := os.Getenv("LOGIN")
+	salt := os.Getenv("SALT")
 	password := []byte{221, 35, 76, 136, 29, 114, 39, 75, 41, 248, 62, 216, 149, 39, 248, 154, 243, 203, 188, 106, 206, 74, 122, 47, 255, 61, 173, 43, 102, 173, 222, 125}
 
 	if credentials.Login != login {
