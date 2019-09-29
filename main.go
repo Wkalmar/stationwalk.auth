@@ -4,14 +4,21 @@ import (
 	"context"
 	"errors"
 	"os"
+	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/argon2"
 )
 
 type Credentials struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
+}
+
+type Claims struct {
+	Username string `json:"username"`
+	jwt.StandardClaims
 }
 
 func areSlicesEqual(a []byte, b []byte) bool {
@@ -26,6 +33,21 @@ func areSlicesEqual(a []byte, b []byte) bool {
 	return true
 }
 
+func issueJwtToken(login string) (string, error) {
+	jwtKey := []byte(os.Getenv("JWTKEY"))
+
+	expirationTime := time.Now().Add(1 * time.Hour)
+	claims := &Claims{
+		Username: login,
+		StandardClaims: jwt.StandardClaims{
+			// In JWT, the expiry time is expressed as unix milliseconds
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(jwtKey)
+}
+
 func HandleRequest(ctx context.Context, credentials Credentials) (string, error) {
 	login := os.Getenv("LOGIN")
 	salt := os.Getenv("SALT")
@@ -36,8 +58,9 @@ func HandleRequest(ctx context.Context, credentials Credentials) (string, error)
 	}
 	key := argon2.Key([]byte(credentials.Password), []byte(salt), 3, 128, 1, 32)
 	if areSlicesEqual(key, password) {
-		return "ok", nil
+		return issueJwtToken(login)
 	}
+
 	return "auth failed", errors.New("auth failed")
 }
 
