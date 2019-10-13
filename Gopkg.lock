@@ -24,6 +24,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:f87f824711bfaa1c7df729d425020bba02fc0af74502e41e629ef90fa4d0389a"
+  name = "github.com/forestgiant/sliceutil"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "94783f95db6c58ab095b288839b769ca549dd4b4"
+
+[[projects]]
+  branch = "master"
   digest = "1:97a47f6b7c9bc870df03bbaa5b6e9c81e6a9afb27f625b825bc6f48143585e88"
   name = "golang.org/x/crypto"
   packages = [
@@ -47,6 +55,7 @@
   input-imports = [
     "github.com/aws/aws-lambda-go/lambda",
     "github.com/dgrijalva/jwt-go",
+    "github.com/forestgiant/sliceutil",
     "golang.org/x/crypto/argon2",
   ]
   solver-name = "gps-cdcl"

@@ -8,6 +8,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/forestgiant/sliceutil"
 	"golang.org/x/crypto/argon2"
 )
 
@@ -19,18 +20,6 @@ type Credentials struct {
 type Claims struct {
 	Username string `json:"username"`
 	jwt.StandardClaims
-}
-
-func areSlicesEqual(a []byte, b []byte) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i, v := range a {
-		if v != b[i] {
-			return false
-		}
-	}
-	return true
 }
 
 func issueJwtToken(login string) (string, error) {
@@ -57,7 +46,7 @@ func HandleRequest(ctx context.Context, credentials Credentials) (string, error)
 		return "auth failed", errors.New("auth failed")
 	}
 	key := argon2.Key([]byte(credentials.Password), []byte(salt), 3, 128, 1, 32)
-	if areSlicesEqual(key, password) {
+	if sliceutil.OrderedCompare(key, password) {
 		return issueJwtToken(login)
 	}
 
