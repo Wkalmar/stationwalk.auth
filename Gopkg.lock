@@ -2,9 +2,10 @@
 
 
 [[projects]]
-  digest = "1:f72cb64e41191cfd2298306e1966b494ed0a66cd3b709025a4e662727016fe7e"
+  digest = "1:6f6ac623effd9448bb698c81309cf9da3a561facedc40bf924e24d2e747ddc14"
   name = "github.com/aws/aws-lambda-go"
   packages = [
+    "events",
     "lambda",
     "lambda/handlertrace",
     "lambda/messages",
@@ -53,6 +54,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/aws/aws-lambda-go/events",
     "github.com/aws/aws-lambda-go/lambda",
     "github.com/dgrijalva/jwt-go",
     "github.com/forestgiant/sliceutil",
